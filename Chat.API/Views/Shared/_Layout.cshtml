@@ -1,0 +1,41 @@
+﻿@using Chat.API.Helpers
+
+<html>
+<head>
+    <title>@ViewData["Title"] - Chat.API</title>
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/global.css"/>
+    <link rel="stylesheet" href="~/css/layout.css"/>
+    <link rel="stylesheet" href="~/css/privatechat.css" />
+    @await RenderSectionAsync("Styles", required: false)
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/signalr/signalr.js"></script>
+    <script src="~/js/signalrInitializer.js"></script>
+    <script src="~/js/Layout.js"></script>
+    <script src="~/js/spaRouter.js"></script>
+    <script src="~/js/PrivateChat.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</head>
+<body>
+    <div class="layout d-flex h-100">
+        <div class="sidebar col-3 border-end border-black">
+            <div class="sidebar-header w-100 p-2 border-bottom">
+                <input class="w-100 border-0" id="search-users-field" type="text" placeholder="Найти пользователя..." 
+                    autocomplete="off" writingsuggestions="false"/>
+            </div>
+
+            <div class="users-list overflow-auto" id="users-list">
+                
+            </div>
+        </div>
+        <div class="layout-body w-100" id="layout-body">
+            @RenderBody()
+        </div>
+    </div>
+
+    <input type="hidden" value="@UserHelper.GetUserId(Context)" id="current-user-id" />
+</body>
+</html>

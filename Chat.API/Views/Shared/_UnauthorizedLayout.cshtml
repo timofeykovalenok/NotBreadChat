@@ -1,0 +1,20 @@
+﻿<html>
+<head>
+    <title>@ViewData["Title"] - Chat.API</title>
+
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/unauthorizedlayout.css" />
+    <link rel="stylesheet" href="~/css/global.css" />
+    @await RenderSectionAsync("Styles", required: false)
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</head>
+<body>
+    <div class="unauthorized-layout h-100">
+        @RenderBody()
+    </div>
+</body>
+</html>

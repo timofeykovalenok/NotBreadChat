@@ -1,0 +1,73 @@
+﻿@model MessageModel
+
+<div class="@GetMessageAuthorClass() message-wrapper d-flex">
+    <div class="@GetMessageAuthorClass() @GetEditedClass() message position-relative mt-2"
+        data-message-id="@Model.MessageId" data-message-date="@GetMessageDateMilliseconds()"
+        @GetUnviewedAttribute()>        
+        <div class="message-cloud p-2">
+            @* <div>
+                <img src="@Model.AuthorImage" />
+                <span>@Model.AuthorName</span>
+            </div> *@
+            <div class="message-content text-break">@Model.MessageContent</div>            
+            <div class="message-date">
+                <span class="edited-text">изменено</span>
+                <span>@Model.MessageDate.ToString("g")</span>
+            </div>
+        </div>
+        <div class="dropdown message-dropdown position-absolute">
+            <button class="dropdown-toggle" data-bs-toggle="dropdown">
+                ...
+            </button>
+            <ul class="dropdown-menu">
+                @if (_isMessageAuthor)
+                {
+                    <li><button class="dropdown-item" data-message-action="edit">Редактировать</button></li>
+                    <li><button class="dropdown-item" data-message-action="delete-locally">Удалить</button></li>
+                    <li><button class="dropdown-item" data-message-action="delete">Удалить для всех</button></li>
+                }
+                else
+                {
+                    <li><button class="dropdown-item" data-message-action="delete-locally">Удалить</button></li>
+                }
+            </ul>
+        </div>
+    
+        <svg class="message-tail position-absolute" width="20" height="20" viewBox="0 0 100 100">
+            <defs>
+                <mask id="message-tail-curve">
+                    <rect width="100" height="100" fill="white" />
+                    <circle cx="15" cy="20" r="85" fill="black" />
+                </mask>
+            </defs>
+            <rect y="20" width="100" height="100" mask="url(#message-tail-curve)" />
+        </svg>
+    </div>
+</div>
+
+@functions {
+    private const string UnviewedAttribute = "data-unviewed";
+
+    private bool _isMessageAuthor => ViewBag.UserId == Model.AuthorId;
+
+    private string GetMessageAuthorClass() =>
+        _isMessageAuthor ? "my-message" : "";
+        
+        private string GetEditedClass() =>
+        Model.EditedDate != null ? "message-edited" : "";
+
+    private string GetUnviewedAttribute()
+    {
+        if (ViewBag.LastViewedMessageCreateAt == null)
+            return ViewBag.UserId != Model.AuthorId
+                ? UnviewedAttribute
+                : "";
+
+        return Model.MessageDate > ViewBag.LastViewedMessageCreateAt
+            ? UnviewedAttribute
+            : "";
+    }
+
+    private long GetMessageDateMilliseconds() =>
+        (long)((Model.MessageDate - DateTime.UnixEpoch).TotalMilliseconds);
+}

@@ -1,0 +1,75 @@
+﻿@import "variables.scss";
+
+html, body {
+    height: 100%;
+}
+
+* {
+    color: $FontColor;
+    scrollbar-color: #495d8b transparent;
+    scrollbar-width: thin;
+
+    &:focus-visible {
+        outline: none;
+    }
+}
+
+.page {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+input, textarea {
+    resize: none;
+    color: $FontColor;
+    /*border-color: white;*/
+    outline: 0;
+    background: transparent;
+
+    &::placeholder {
+        color: $FontColor;
+        opacity: 0.5;
+    }
+}
+
+button {
+    background: $PrimaryColor;
+    border: 0;
+    position: relative;
+
+    &:hover::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: $BackgroundHoverColor;
+        border-radius: inherit;
+    }
+}
+
+.dropdown {
+
+    .dropdown-toggle {
+        padding: 0;
+
+        &::after {
+            content: none;
+        }
+    }
+
+    .dropdown-menu {
+        background: $PrimaryColor;
+        color: $FontColor;
+
+        .dropdown-item {
+            color: $FontColor;
+
+            &:hover, &:active {
+                background: transparent;
+            }
+        }
+    }
+}

@@ -1,0 +1,21 @@
+﻿@import "variables.scss";
+
+.registration-page {
+
+    .registration-form {
+        height: 450px;
+        width: 330px;
+        border: 1px solid black;
+        background: $PrimaryColorLight;
+
+        input {
+            align-self: stretch;
+            background: $PrimaryColor;
+            border: 0;
+        }
+    }
+
+    a {
+        color: $PrimaryColorLighter;
+    }
+}

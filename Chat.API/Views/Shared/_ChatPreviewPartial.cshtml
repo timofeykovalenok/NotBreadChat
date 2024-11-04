@@ -1,0 +1,23 @@
+﻿@model ChatModel
+
+<a class="chat-preview position-relative d-flex flex-column justify-content-center p-3" 
+    href="/@Model.OtherUserId" data-user-id="@Model.OtherUserId">
+    <div class="d-flex align-items-center">
+        @* <img src="@Model.Image"/> *@
+        <div>@Model.Title</div>
+        <div class="last-message-date ms-auto">@Model.LastMessage.MessageDate.ToString("g")</div>
+    </div>
+    <div class="d-flex justify-content-between">
+        <div class="last-message @GetMessageAuthorClass()">
+            @* <img src="@Model.LastMessage.AuthorImage" />
+            <span>@Model.LastMessage.AuthorName</span> *@
+            <span class="last-message-content">@Model.LastMessage.MessageContent</span>
+        </div>
+        <partial name="_CounterPartial" model="@("unviewed-messages-count", Model.UnviewedMessagesCount)" />
+    </div>
+</a>
+
+@functions {
+    private string GetMessageAuthorClass() =>
+        ViewBag.UserId == Model.LastMessage.AuthorId ? "my-message" : "";
+}

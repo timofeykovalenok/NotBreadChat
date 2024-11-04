@@ -1,0 +1,27 @@
+﻿@page
+@{
+    Layout = "~/Views/Shared/_UnauthorizedLayout.cshtml";
+}
+
+<div class="page registration-page d-flex justify-content-center align-items-center">
+    <form class="registration-form d-flex flex-column align-items-center px-2 pt-5" id="registration-form"
+        method="post" asp-controller="Identity" asp-action="Register">
+        <div class="mb-2">
+            Регистрация
+        </div>
+
+        <input class="mb-2" type="text" name="login" placeholder="Логин" />
+        <input class="mb-2" type="text" name="username" placeholder="Имя пользователя" />
+        <input class="mb-2" type="password" name="password" placeholder="Пароль" />
+        <button type="submit">Зарегистрироваться</button>
+    </form>
+    <a href="/login">Войти</a>
+</div>
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/registration.css" />
+}
+
+@section Scripts {
+    <script src="~/js/Registration.js"></script>
+}

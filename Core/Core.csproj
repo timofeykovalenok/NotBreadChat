@@ -1,0 +1,28 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <WarningsAsErrors />
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <WarningsAsErrors />
+  </PropertyGroup>
+
+	<ItemGroup>
+		<PackageReference Include="FluentMigrator" Version="5.2.0" />
+		<PackageReference Include="FluentMigrator.Runner" Version="5.2.0" />
+		<PackageReference Include="linq2db.AspNet" Version="5.4.1" />
+		<PackageReference Include="linq2db.PostgreSQL" Version="5.4.1" />
+		<PackageReference Include="linq2db.Tools" Version="5.4.1" />
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
+		<PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="8.0.0" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.1" />
+	</ItemGroup>
+
+</Project>

@@ -1,0 +1,23 @@
+﻿@page
+@{
+    Layout = "~/Views/Shared/_UnauthorizedLayout.cshtml";
+}
+
+<div class="page login-page d-flex justify-content-center align-items-center">
+    <form class="login-form d-flex flex-column align-items-center px-2 pt-5" id="login-form" 
+        method="post" asp-controller="Identity" asp-action="Login">
+        <div class="mb-2">
+            Авторизация
+        </div>
+
+        <input type="hidden" name="returnUrl" value="@ViewBag.ReturnUrl" />
+        <input class="mb-2" type="text" name="login" placeholder="Логин" />
+        <input class="mb-2" type="password" name="password" placeholder="Пароль" />
+        <button type="submit">Войти</button>
+    </form>
+    <a href="/registration">Зарегистрироваться</a>
+</div>
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/login.css" />
+}

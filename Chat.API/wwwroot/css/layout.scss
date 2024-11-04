@@ -1,0 +1,64 @@
+﻿@import "variables.scss";
+
+.layout {
+
+    .sidebar {
+        background-color: $PrimaryColor;
+
+        .sidebar-header {
+            background-color: #306ecb;
+
+            #search-users-field {
+                background-color: transparent;
+            }
+        }
+
+        a.search-user, a.chat-preview {
+            height: 65px;
+            text-decoration: none;
+            color: inherit;
+
+            &:hover {
+                background: $BackgroundHoverColor;
+            }
+        }
+
+        .last-message {
+            text-overflow: ellipsis;
+            overflow: hidden;
+            white-space: nowrap;
+            font-size: 0.75rem;
+            color: #afafaf;
+
+            .last-message-content {
+                color: inherit;
+            }
+        }
+
+        .last-message-date {
+            font-size: 0.75rem;
+            color: #afafaf;
+        }
+    }
+
+    .layout-body {
+        background-color: $PrimaryColorDark;
+    }
+
+    .counter {
+        min-width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        font-size: 0.75rem;
+        color: white;
+        background: $PrimaryColorLighter;
+
+        &[data-count="0"] {
+            display: none !important;
+        }
+
+        &::after {
+            content: attr(data-count);
+        }
+    }
+}

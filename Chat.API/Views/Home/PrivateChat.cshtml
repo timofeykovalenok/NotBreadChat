@@ -1,0 +1,40 @@
+﻿@model GetPrivateChatResponse
+@{
+    ViewData["LastViewedMessageCreateAt"] = Model.LastViewedMessageCreateAt;
+}
+
+<div class="private-chat-page page" id="private-chat-page" tabindex="-1" data-other-user-id="@Model.OtherUser.UserId">
+    <div>
+        <img src="@Model.OtherUser.Image"/>
+        <span>@Model.OtherUser.Username</span>
+    </div>
+    <div class="messages-list-container d-flex flex-grow-1 position-relative">
+        <div class="messages-list overflow-auto d-flex flex-column flex-grow-1 px-4 pb-2" id="messages-list">            
+
+            @foreach (var message in Model.Messages)
+            {
+                <partial name="_MessagePartial" model="message" view-data="ViewData"/>
+            }
+
+        </div>
+        <button class="scroll-down-button position-absolute d-none" id="scroll-down-button">
+            <svg class="arrow-down" width="16" height="16" viewBox="0 0 100 100">
+                <line x1="0" x2="50" y1="25" y2="75" />
+                <line x1="50" x2="100" y1="75" y2="25" />
+            </svg>
+
+            <partial name="_CounterPartial" 
+                model="@("unviewed-messages-count position-absolute",
+                    Model.Messages.Count(message => message.MessageDate > Model.LastViewedMessageCreateAt))" />
+        </button>
+    </div>
+    <div class="private-chat-page-footer d-flex">
+        <div class="editing-message-block d-none" id="editing-message-block">
+            <div class="old-message-content"></div>
+            <button id="edit-message-cancel">Отменить</button>
+        </div>
+        <textarea class="write-message-field flex-grow-1 p-2" id="write-message-field" placeholder="Написать сообщение..." rows="3" autofocus></textarea>
+        <button id="write-message-button">Отправить</button>
+        <button class="d-none" id="edit-message-confirm">Подтвердить</button>
+    </div>    
+</div>    

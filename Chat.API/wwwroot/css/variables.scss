@@ -1,0 +1,15 @@
+﻿$PrimaryColor: var(--primary-color);
+$PrimaryColorDark: var(--primary-color-dark);
+$PrimaryColorLight: var(--primary-color-light);
+$PrimaryColorLighter: var(--primary-color-lighter);
+$FontColor: var(--font-color);
+$BackgroundHoverColor: var(--background-hover);
+
+:root {
+    --primary-color: #102c57;
+    --primary-color-dark: #101a33;
+    --primary-color-light: #306ecb;
+    --primary-color-lighter: #609eeb;
+    --font-color: white;
+    --background-hover: rgba(255, 255, 255, 0.1);
+}

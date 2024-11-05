@@ -1,4 +1,5 @@
-﻿type _ = typeof import('@microsoft/signalr');
+﻿//@ts-nocheck
+type _ = typeof import('@microsoft/signalr');
 
 const hubConnection = new window.signalR.HubConnectionBuilder()
     .withUrl("/sockets")

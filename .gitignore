@@ -486,6 +486,9 @@ $RECYCLE.BIN/
 *.css*
 *.js*
 *.min*
-docker-compose*
+docker-compose*.yml
+compose*.yaml
+*.dcproj
 Dockerfile*
+.dockerignore
 TemplateEngineHost/*

@@ -15,7 +15,7 @@
 Если ссылка не работает, приложение можно быстро развернуть локально при помощи Docker Compose:
 
 1. Установить Docker ([https://docs.docker.com/get-started/get-docker](https://docs.docker.com/get-started/get-docker))
-2. [Скачать архив](https://github.com/timofeykovalenok/NotBreadChat/issues/1https://github.com/user-attachments/files/17662132/docker-compose.zip) с Docker Compose файлом и распаковать
+2. [Скачать архив](https://github.com/timofeykovalenok/NotBreadChat/issues/1) с Docker Compose файлом и распаковать
 3. Открыть папку с Compose файлом в командной строке
 4. Выполнить команду `docker compose up`
 

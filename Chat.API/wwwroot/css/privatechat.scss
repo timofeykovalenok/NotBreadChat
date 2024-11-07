@@ -2,6 +2,13 @@
 
 .private-chat-page {
 
+    .chat-header {
+        height: 55px;
+        padding: 0 14px 0 14px;
+        border-bottom: 1px solid;
+        background: $PrimaryColor;
+    }
+
     .messages-list-container {
         min-height: 0;
 
@@ -13,7 +20,6 @@
             border-radius: 50%;
 
             .arrow-down {
-                stroke: white;
                 stroke-width: 8px;
             }
 
@@ -49,6 +55,7 @@
                 .message {
                     max-width: 500px;
                     border-radius: 8px;
+                    scroll-margin-top: 15px;
 
                     &:not(.my-message) {
                         background-color: $PrimaryColor;
@@ -95,13 +102,14 @@
 
                     .message-tail {
                         bottom: 0;
+                        stroke: none;
                     }
 
                     .message-content {
                         white-space: pre-line;
                     }
 
-                    .message-date > * {
+                    .message-date {
                         font-size: 0.75rem;
                         color: #afafaf;
                         text-align: right;

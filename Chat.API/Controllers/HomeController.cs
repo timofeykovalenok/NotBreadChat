@@ -34,7 +34,7 @@ namespace Chat.API.Controllers
         {
             Response.Headers.CacheControl = "no-store";
 
-            return Request.Headers.Accept.FirstOrDefault()?.Contains("text/html") ?? false
+            return Request.Headers["Sec-Fetch-Mode"] == "navigate"
                 ? View(model)
                 : PartialView(model);
         }

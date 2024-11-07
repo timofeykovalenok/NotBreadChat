@@ -1,11 +1,11 @@
 ﻿@model ChatModel
 
 <a class="chat-preview position-relative d-flex flex-column justify-content-center p-3" 
-    href="/@Model.OtherUserId" data-user-id="@Model.OtherUserId">
+    href="/@Model.OtherUserId" draggable="false" data-user-id="@Model.OtherUserId">
     <div class="d-flex align-items-center">
         @* <img src="@Model.Image"/> *@
         <div>@Model.Title</div>
-        <div class="last-message-date ms-auto">@Model.LastMessage.MessageDate.ToString("g")</div>
+        <div class="last-message-date ms-auto"><time datetime="@Model.LastMessage.MessageDate.ToString("o")"></time></div>
     </div>
     <div class="d-flex justify-content-between">
         <div class="last-message @GetMessageAuthorClass()">

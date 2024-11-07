@@ -1,4 +1,5 @@
-﻿@model MessageModel
+﻿@using System.Globalization
+@model MessageModel
 
 <div class="@GetMessageAuthorClass() message-wrapper d-flex">
     <div class="@GetMessageAuthorClass() @GetEditedClass() message position-relative mt-2"
@@ -12,7 +13,7 @@
             <div class="message-content text-break">@Model.MessageContent</div>            
             <div class="message-date">
                 <span class="edited-text">изменено</span>
-                <span>@Model.MessageDate.ToString("g")</span>
+                <span class="date-text"><time datetime="@Model.MessageDate.ToString("o")"></time></span>
             </div>
         </div>
         <div class="dropdown message-dropdown position-absolute">

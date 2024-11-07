@@ -76,6 +76,14 @@ namespace Chat.API.Controllers
             return await SignIn(result.UserId);
         }
 
+        //[HttpPost("/logout")]
+        //public async Task<IActionResult> Logout()
+        //{
+        //    await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
+
+        //    return LocalRedirect("/login");
+        //}
+
         #endregion
 
         #region Private Methods

@@ -5,7 +5,8 @@
     private observer: IntersectionObserver;
     private editingMessageId: number;
 
-    private readonly page = document.getElementById('private-chat-page');
+    private readonly currentUserId = parseInt(document.getElementById('current-user-id').getAttribute('value'));
+    private readonly otherUserId = parseInt(window.location.pathname.split('/').at(-1));
 
     private readonly messagesList = document.getElementById('messages-list');
 
@@ -25,21 +26,24 @@
     //#region Public Methods
 
     initialize() {
-        this.observer = new IntersectionObserver(this.onMessageIntersection);
+        formatDatesLocally(this.messagesList);
+
+        this.observer = new IntersectionObserver(this.onMessageIntersection, { threshold: 0.5 });
         const unviewedMessages = this.messagesList.querySelectorAll('.message[data-unviewed]');
         unviewedMessages.forEach(message => {
             this.observer.observe(message);
         });
 
-        this.checkScrollDownButtonVisibility();
-
-        //this.page.addEventListener('keydown', this.onKeyDown);
         this.messagesList.addEventListener('scroll', this.onMessagesListScroll);
+        this.messagesList.addEventListener('scrollend', this.onMessagesListScrollEnd);
         this.messagesList.addEventListener('click', this.onMessagesListClick);
         this.writeMessageButton.addEventListener('click', this.onWriteMessageClick);
+        this.writeMessageField.addEventListener('keydown', this.onWriteMessageFieldKeyDown);
         this.editMessageConfirmButton.addEventListener('click', this.onEditMessageConfirmClick);
         this.editMessageCancelButton.addEventListener('click', this.onEditMessageCancelClick);
-        this.scrollDownButton.addEventListener('click', this.onScrollDownButtonClick);
+        this.scrollDownButton.addEventListener('click', this.onScrollDownButtonClick);        
+
+        this.restoreSavedScrollValue();
 
         hubConnection.on('newMessage', this.onNewMessageEvent);
         hubConnection.on('messageViewed', this.onMessageViewedEvent);
@@ -58,11 +62,7 @@
 
     //#endregion
 
-    //#region DOM Events
-
-    private onKeyDown = () => {
-        this.writeMessageField.focus();
-    }
+    //#region DOM Events    
 
     private onMessageIntersection = (entries: IntersectionObserverEntry[], observer: IntersectionObserver) => {
         let lastEntry = entries.findLast(entry => entry.isIntersecting);
@@ -77,7 +77,18 @@
     }      
 
     private onMessagesListScroll = () => {
-        this.checkScrollDownButtonVisibility();
+        if (this.IsScrolledToEnd())
+            this.scrollDownButton.classList.add('d-none');
+        else
+            this.scrollDownButton.classList.remove('d-none');
+    }
+
+    private onMessagesListScrollEnd = () => {
+        let scrollStorageKey = `scroll-chat-value-${this.currentUserId}-${this.otherUserId}`;
+        if (this.IsScrolledToEnd())
+            window.localStorage.removeItem(scrollStorageKey);
+        else
+            window.localStorage.setItem(scrollStorageKey, this.messagesList.scrollTop.toString());
     }
 
     private onMessagesListClick = (e: MouseEvent) => {
@@ -109,17 +120,13 @@
     }    
 
     private onWriteMessageClick = async () => {
-        let messageContent = this.writeMessageField.value.trim();
-        if (messageContent == '')
-            return;
+        this.writeMessage();
+    }
 
-        const otherUserId = parseInt(window.location.pathname.split('/').at(-1));
-
-        await hubConnection.invoke('sendPrivateChatMessage', { receiverId: otherUserId, content: messageContent });
-
-        this.writeMessageField.value = '';
-        this.scrollToEnd();
-    }    
+    private onWriteMessageFieldKeyDown = (e: KeyboardEvent) => {
+        if (e.ctrlKey && e.key == 'Enter')
+            this.writeMessage();
+    }
 
     private onEditMessageConfirmClick = () => {
         let newMessageContent = this.writeMessageField.value.trim();
@@ -144,19 +151,17 @@
     //#region Hub Events
 
     private onNewMessageEvent = (data) => {
-        const otherUserId = parseInt(window.location.pathname.split('/').at(-1));
-        const currentUserId = parseInt(document.getElementById('current-user-id').getAttribute('value'));
-
-        let fromCurrentChat = (data.message.model.authorId == otherUserId && data.message.model.receiverUserId == currentUserId)
-            || (data.message.model.receiverUserId == otherUserId && data.message.model.authorId == currentUserId)
+        let fromCurrentChat = (data.message.model.authorId == this.otherUserId && data.message.model.receiverUserId == this.currentUserId)
+            || (data.message.model.receiverUserId == this.otherUserId && data.message.model.authorId == this.currentUserId)
         if (!fromCurrentChat)
             return;
 
-        let scrolledToEnd = this.messagesList.scrollHeight - (this.messagesList.scrollTop + this.messagesList.clientHeight) <= 30;
+        let scrolledToEnd = this.IsScrolledToEnd();
 
         this.messagesList.insertAdjacentHTML('beforeend', data.message.html);
 
-        let newMessage = this.messagesList.lastElementChild;
+        let newMessage = this.messagesList.lastElementChild.querySelector('.message');
+        formatDatesLocally(newMessage);
 
         if (newMessage.hasAttribute('data-unviewed')) {
             this.observer.observe(newMessage);
@@ -170,9 +175,7 @@
     }
 
     private onMessageViewedEvent = (model) => {
-        const currentUserId = parseInt(document.getElementById('current-user-id').getAttribute('value'));
-
-        if (model.viewedByUserId == currentUserId) {
+        if (model.viewedByUserId == this.currentUserId) {
 
             this.updateUnviewedMessagesCounters(model.unviewedMessagesLeft);
             return;
@@ -197,38 +200,64 @@
 
     //#region Private Methods
 
+    private restoreSavedScrollValue() {
+        let savedScrollValue = window.localStorage.getItem(`scroll-chat-value-${this.currentUserId}-${this.otherUserId}`);
+        if (savedScrollValue != null) {
+            this.messagesList.scroll(0, parseInt(savedScrollValue));
+            return;
+        }
+
+        let firstUnviewedMessage = this.messagesList.querySelector('.message[data-unviewed]');
+        if (firstUnviewedMessage != null)
+            firstUnviewedMessage.scrollIntoView();
+        else
+            this.messagesList.scroll(0, Number.MAX_SAFE_INTEGER);
+    }
+
     private updateUnviewedMessagesCounters(value: number) {
         this.unviewedMessagesCounter.setAttribute('data-count', value.toString());
-    }    
+    } 
 
-    private checkScrollDownButtonVisibility() {
-        let scrolledToEnd = this.messagesList.scrollHeight - (this.messagesList.scrollTop + this.messagesList.clientHeight) <= 30;
-        if (scrolledToEnd)
-            this.scrollDownButton.classList.add('d-none');
-        else
-            this.scrollDownButton.classList.remove('d-none');
-    }  
+    private async writeMessage() {
+        this.writeMessageField.focus();
+
+        let messageContent = this.writeMessageField.value.trim();
+        if (messageContent == '')
+            return;
+
+        this.writeMessageField.value = '';
+        const otherUserId = parseInt(window.location.pathname.split('/').at(-1));
+
+        await hubConnection.invoke('sendPrivateChatMessage', { receiverId: otherUserId, content: messageContent });
+
+        this.scrollToEnd();
+    }
+
+    private IsScrolledToEnd(): Boolean {
+        return this.messagesList.scrollHeight - (this.messagesList.scrollTop + this.messagesList.clientHeight) <= 30;
+    }
 
     private scrollToEnd() {
         this.messagesList.scrollTo(0, this.messagesList.scrollHeight);
     }
 
     private startMessageEditing(messageElement: HTMLElement) {
+        this.writeMessageField.focus();
+
+        this.editingMessageId = parseInt(messageElement.getAttribute('data-message-id'));
 
         this.writeMessageButton.classList.add('d-none');
         this.editMessageConfirmButton.classList.remove('d-none');
         this.editingMessageBlock.classList.remove('d-none');
 
-        this.editingMessageId = parseInt(messageElement.getAttribute('data-message-id'));
-
         let oldMessageContent = messageElement.querySelector('.message-content').textContent;
         this.writeMessageField.value = oldMessageContent;
         this.editingMessageOldContent.textContent = oldMessageContent;
-
-        this.writeMessageField.focus();
     }
 
     private endMessageEditing() {
+        this.writeMessageField.focus();
+
         this.editingMessageId = null;
 
         this.writeMessageButton.classList.remove('d-none');
@@ -236,8 +265,6 @@
         this.editingMessageBlock.classList.add('d-none');
 
         this.writeMessageField.value = '';
-
-        this.writeMessageField.focus();
     }
 
     //#endregion

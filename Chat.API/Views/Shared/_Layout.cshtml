@@ -22,13 +22,26 @@
 <body>
     <div class="layout d-flex h-100">
         <div class="sidebar col-3 border-end border-black">
-            <div class="sidebar-header w-100 p-2 border-bottom">
+            <div class="sidebar-header w-100 p-2 border-bottom d-flex">
+                @* <button id="user-settings-button">=</button> *@
+
                 <input class="w-100 border-0" id="search-users-field" type="text" placeholder="Найти пользователя..." 
                     autocomplete="off" writingsuggestions="false"/>
+                <button class="search-users-clear-button align-self-center" id="search-users-clear-button">
+                    <svg width="12" height="12" viewBox="0 0 100 100">
+                        <line x1="0" x2="100" y1="0" y2="100" />
+                        <line x1="0" x2="100" y1="100" y2="0" />
+                    </svg>
+                </button>
             </div>
 
-            <div class="users-list overflow-auto" id="users-list">
+            <div class="overflow-auto">
+                <div class="chats-list" id="chats-list">
                 
+                </div>
+                <div class="users-list" id="users-list">
+                
+                </div>
             </div>
         </div>
         <div class="layout-body w-100" id="layout-body">

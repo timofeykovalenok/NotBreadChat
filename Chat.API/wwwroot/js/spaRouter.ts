@@ -20,7 +20,13 @@ document.addEventListener('click', e => {
 });
 
 async function handleLocation(route: string) {
-    const html = await fetch(route).then((data) => data.text());
+    let response = await fetch(route, { mode: 'same-origin', redirect: 'manual' });
+    if (response.status != 200) {
+        window.location.replace(route);
+        return;
+    }        
+
+    let html = await response.text();
     document.getElementById('layout-body').innerHTML = html;
 };
 
@@ -37,8 +43,9 @@ window.addEventListener('DOMContentLoaded', () => {
     function onPageLoad() {
         currentPage?.dispose();
 
-        let pageId = layoutBody.firstElementChild?.id;
-        if (pageId == null) {
+        let pageElement = layoutBody.firstElementChild;
+        let pageId = pageElement?.id;
+        if (pageElement == null || pageId == '') {
             currentPage = null;
             return;
         }

@@ -2,10 +2,10 @@
 
 html, body {
     height: 100%;
+    color: $FontColor;
 }
 
 * {
-    color: $FontColor;
     scrollbar-color: #495d8b transparent;
     scrollbar-width: thin;
 
@@ -35,6 +35,7 @@ input, textarea {
 
 button {
     background: $PrimaryColor;
+    color: $FontColor;
     border: 0;
     position: relative;
 
@@ -48,6 +49,15 @@ button {
         background: $BackgroundHoverColor;
         border-radius: inherit;
     }
+}
+
+a {
+    -webkit-user-drag: none;
+}
+
+svg {
+    stroke: $FontColor;
+    stroke-width: 8px;
 }
 
 .dropdown {

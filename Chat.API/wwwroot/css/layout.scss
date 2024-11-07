@@ -6,10 +6,21 @@
         background-color: $PrimaryColor;
 
         .sidebar-header {
+            height: 55px;
             background-color: #306ecb;
 
             #search-users-field {
                 background-color: transparent;
+
+                &:placeholder-shown + .search-users-clear-button {
+                    display: none;
+                }
+            }
+
+            .search-users-clear-button {
+                width: 24px;
+                height: 24px;
+                border-radius: 50%;
             }
         }
 
@@ -17,6 +28,10 @@
             height: 65px;
             text-decoration: none;
             color: inherit;
+
+            &.active {
+                background: $BackgroundHoverColor;
+            }
 
             &:hover {
                 background: $BackgroundHoverColor;

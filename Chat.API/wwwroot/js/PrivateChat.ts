@@ -124,18 +124,17 @@
     }
 
     private onWriteMessageFieldKeyDown = (e: KeyboardEvent) => {
-        if (e.ctrlKey && e.key == 'Enter')
+        if (!e.ctrlKey || e.key != 'Enter')
+            return;
+
+        if (this.editingMessageId == null)
             this.writeMessage();
+        else
+            this.confirmMessageEditing();
     }
 
     private onEditMessageConfirmClick = () => {
-        let newMessageContent = this.writeMessageField.value.trim();
-        if (newMessageContent == '')
-            return;
-
-        hubConnection.send('editMessage', { messageId: this.editingMessageId, content: newMessageContent });
-
-        this.endMessageEditing();
+        this.confirmMessageEditing();
     }
 
     private onEditMessageCancelClick = () => {
@@ -253,6 +252,18 @@
         let oldMessageContent = messageElement.querySelector('.message-content').textContent;
         this.writeMessageField.value = oldMessageContent;
         this.editingMessageOldContent.textContent = oldMessageContent;
+    }
+
+    private confirmMessageEditing() {
+        let oldMessageContent = this.editingMessageOldContent.textContent;
+        let newMessageContent = this.writeMessageField.value.trim();
+
+        this.endMessageEditing();
+
+        if (newMessageContent == '' || oldMessageContent == newMessageContent)
+            return;
+
+        hubConnection.send('editMessage', { messageId: this.editingMessageId, content: newMessageContent });
     }
 
     private endMessageEditing() {

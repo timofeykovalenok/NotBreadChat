@@ -7,7 +7,7 @@
 
         .sidebar-header {
             height: 55px;
-            background-color: #306ecb;
+            background-color: $SecondaryColor;
 
             #search-users-field {
                 background-color: transparent;
@@ -57,6 +57,7 @@
     }
 
     .layout-body {
+        min-width: 0;
         background-color: $PrimaryColorDark;
     }
 
@@ -66,7 +67,7 @@
         border-radius: 50%;
         font-size: 0.75rem;
         color: white;
-        background: $PrimaryColorLighter;
+        background: $SecondaryColorLight;
 
         &[data-count="0"] {
             display: none !important;

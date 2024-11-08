@@ -6,7 +6,7 @@ html, body {
 }
 
 * {
-    scrollbar-color: #495d8b transparent;
+    scrollbar-color: $ScrollbarColor transparent;
     scrollbar-width: thin;
 
     &:focus-visible {
@@ -34,7 +34,7 @@ input, textarea {
 }
 
 button {
-    background: $PrimaryColor;
+    background: $PrimaryColorLight;
     color: $FontColor;
     border: 0;
     position: relative;

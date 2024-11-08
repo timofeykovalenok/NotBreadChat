@@ -6,7 +6,7 @@
         height: 450px;
         width: 330px;
         border: 1px solid black;
-        background: $PrimaryColorLight;
+        background: $SecondaryColor;
 
         input {
             align-self: stretch;
@@ -16,6 +16,6 @@
     }
 
     a {
-        color: $PrimaryColorLighter;
+        color: $SecondaryColorLight;
     }
 }

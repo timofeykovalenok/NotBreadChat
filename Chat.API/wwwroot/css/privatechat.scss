@@ -58,12 +58,12 @@
                     scroll-margin-top: 15px;
 
                     &:not(.my-message) {
-                        background-color: $PrimaryColor;
+                        background-color: $PrimaryColorLight;
                         border-bottom-left-radius: 0;
                         justify-self: start;
 
                         .message-tail {
-                            fill: $PrimaryColor;
+                            fill: $PrimaryColorLight;
                             left: -20px;
                         }
 
@@ -71,7 +71,7 @@
                             right: -12px;
 
                             .dropdown-toggle {
-                                background-color: $PrimaryColor;
+                                background-color: $PrimaryColorLight;
                             }
                         }
                     }
@@ -79,10 +79,10 @@
                     &.my-message {
                         border-bottom-right-radius: 0;
                         justify-self: end;
-                        background-color: $PrimaryColorLight;
+                        background-color: $SecondaryColor;
 
                         .message-tail {
-                            fill: $PrimaryColorLight;
+                            fill: $SecondaryColor;
                             right: -20px;
                             transform: scaleX(-1);
                         }
@@ -91,7 +91,7 @@
                             left: -12px;
 
                             .dropdown-toggle {
-                                background-color: $PrimaryColorLight;
+                                background-color: $SecondaryColor;
                             }
                         }
                     }
@@ -124,7 +124,7 @@
                             width: 24px;
                             height: 24px;
                             border-radius: 50%;
-                            border: 3px solid $PrimaryColorDark;                            
+                            border: 3px solid $PrimaryColorDark;
                         }
                     }
                 }
@@ -134,6 +134,16 @@
 
     &-footer {
         background-color: $PrimaryColor;
+
+        .editing-message-block {
+            height: 50px;
+
+            .old-message-content {
+                text-overflow: ellipsis;
+                overflow: hidden;
+                white-space: nowrap;
+            }
+        }
 
         .write-message-field {
             background-color: transparent;

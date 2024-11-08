@@ -20,15 +20,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Content Remove="wwwroot\css\variables.scss" />
-    <Content Remove="wwwroot\js\signalrInitializer.ts" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <_ContentIncludedByDefault Remove="wwwroot\css\variables.scss" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="FluentMigrator.Console" Version="5.2.0" />
     <PackageReference Include="Microsoft.TypeScript.MSBuild" Version="5.6.2">
       <PrivateAssets>all</PrivateAssets>

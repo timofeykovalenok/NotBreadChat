@@ -1,15 +1,19 @@
 ﻿$PrimaryColor: var(--primary-color);
 $PrimaryColorDark: var(--primary-color-dark);
 $PrimaryColorLight: var(--primary-color-light);
-$PrimaryColorLighter: var(--primary-color-lighter);
+$SecondaryColor: var(--secondary-color);
+$SecondaryColorLight: var(--secondary-color-light);
 $FontColor: var(--font-color);
+$ScrollbarColor: var(--scrollbar-color);
 $BackgroundHoverColor: var(--background-hover);
 
 :root {
-    --primary-color: #102c57;
-    --primary-color-dark: #101a33;
-    --primary-color-light: #306ecb;
-    --primary-color-lighter: #609eeb;
+    --primary-color: #1a2639;
+    --primary-color-dark: #1c2233;
+    --primary-color-light: #1c2b41;
+    --secondary-color: #2c394f;
+    --secondary-color-light: #6382a5;
     --font-color: white;
+    --scrollbar-color: #525b71;
     --background-hover: rgba(255, 255, 255, 0.1);
 }

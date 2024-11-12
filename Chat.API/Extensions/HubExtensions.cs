@@ -1,5 +1,4 @@
-﻿using Chat.API.Interfaces;
-using Microsoft.AspNetCore.SignalR;
+﻿using Microsoft.AspNetCore.SignalR;
 
 namespace Chat.API.Extensions
 {

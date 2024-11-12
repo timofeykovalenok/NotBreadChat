@@ -1,6 +1,7 @@
-﻿using Chat.API.Helpers;
-using Chat.BLL.Interfaces;
-using Chat.BLL.Models.User;
+﻿using Chat.API.Controllers.Base;
+using Chat.API.Helpers;
+using Chat.BLL.Models.User.Requests;
+using Chat.BLL.Services.Interfaces;
 using Core;
 using Core.Extensions;
 using LinqToDB.Schema;
@@ -14,7 +15,7 @@ using System.Security.Claims;
 namespace Chat.API.Controllers
 {
     [AllowAnonymous]
-    public class IdentityController : Controller
+    public class IdentityController : BaseController
     {
         #region Injects
 

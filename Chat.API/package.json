@@ -1,0 +1,6 @@
+{
+  "devDependencies": {
+    "@microsoft/signalr": "^8.0.7",
+    "@types/node": "^22.5.5"
+  }
+}

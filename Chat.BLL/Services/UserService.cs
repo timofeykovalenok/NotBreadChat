@@ -1,10 +1,12 @@
-﻿using Azure.Core;
-using Chat.BLL.Interfaces;
-using Chat.BLL.Models.User;
+﻿using Chat.BLL.Models.Shared;
+using Chat.BLL.Models.User.Requests;
+using Chat.BLL.Models.User.Responses;
+using Chat.BLL.Services.Interfaces;
 using Context;
 using Core.Exceptions;
 using Core.Extensions;
 using LinqToDB;
+using Microsoft.IdentityModel.Tokens;
 using System.Net;
 using System.Security.Cryptography;
 using System.Text;
@@ -13,36 +15,41 @@ namespace Chat.BLL.Services
 {
     internal class UserService : IUserService
     {
-        private PostgresDb _db;
+        #region Injects
 
-        public UserService(PostgresDb db)
+        private readonly ChatContext _context;
+
+        #endregion
+
+        #region Ctors
+
+        public UserService(ChatContext context)
         {
-            _db = db;
+            _context = context;
         }
 
-        public Task DeleteUser(long id, CancellationToken ctn)
-        {
-            throw new NotImplementedException();
-        }        
+        #endregion
+
+        #region Public Methods        
 
         public async Task<RegisterResponse> Register(RegisterRequest request, CancellationToken ctn = default)
         {
             var salt = RandomNumberGenerator.GetBytes(16);
             var passwordHash = GetPasswordHash(request.Password, salt);
 
-            if (await _db.GetTable<User>().AnyAsync(x => x.Login == request.Login, ctn))
+            if (await _context.GetTable<User>().AnyAsync(x => x.Login == request.Login, ctn))
                 throw new StatusCodeException(HttpStatusCode.Conflict);
 
-            var userId = await _db.GetTable<User>().InsertWithInt64IdentityAsync(() =>
+            var userId = await _context.GetTable<User>().InsertWithInt64IdentityAsync(() =>
                 new User
                 {
                     Login = request.Login,
                     Name = request.UserName,
                     PasswordHash = Convert.ToBase64String(passwordHash),
                     PasswordSalt = Convert.ToBase64String(salt),
-                }, 
+                },
                 ctn);
-            
+
             return new RegisterResponse
             {
                 UserId = userId
@@ -51,7 +58,7 @@ namespace Chat.BLL.Services
 
         public async Task<LoginResponse> Login(LoginRequest request, CancellationToken ctn = default)
         {
-            var user = await _db.GetTable<User>()
+            var user = await _context.GetTable<User>()
                 .FirstOrDefaultAsync(user => user.Login == request.Login, ctn)
                 ?? throw new StatusCodeException(HttpStatusCode.Unauthorized);
 
@@ -70,7 +77,7 @@ namespace Chat.BLL.Services
 
         public async Task<GetUserResponse> GetUser(long id)
         {
-            var user = await _db.GetTable<User>()
+            var user = await _context.GetTable<User>()
                 .FirstOrDefaultAsync(user => user.Id == id)
                 ?? throw new StatusCodeException(HttpStatusCode.NotFound);
 
@@ -82,18 +89,14 @@ namespace Chat.BLL.Services
             };
         }
 
-        private static byte[] GetPasswordHash(string password, byte[] salt)
-        {
-            var passwordBytes = Encoding.UTF8.GetBytes(password);
-            var saltedPassword = passwordBytes.ConcatBytes(salt);
-
-            return SHA256.HashData(saltedPassword);
-        }
-
         public async Task<SearchUsersResponse> SearchUsers(SearchUsersRequest request)
         {
-            var users = await _db.GetTable<User>()
-                .Where(user => Sql.Like(user.Name, $"%{request.SearchValue}%"))
+            var usersQuery = _context.GetTable<User>().AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(request.SearchValue))
+                usersQuery = usersQuery.Where(user => Sql.Like(user.Name, $"%{request.SearchValue}%"));
+
+            var users = await usersQuery                
                 .ToListAsync();
 
             var usersModels = users.Select(user => new UserModel
@@ -108,5 +111,20 @@ namespace Chat.BLL.Services
                 Users = usersModels
             };
         }
+
+        public Task DeleteUser(long id, CancellationToken ctn)
+        {
+            throw new NotImplementedException();
+        }
+
+        private static byte[] GetPasswordHash(string password, byte[] salt)
+        {
+            var passwordBytes = Encoding.UTF8.GetBytes(password);
+            var saltedPassword = passwordBytes.ConcatBytes(salt);
+
+            return SHA256.HashData(saltedPassword);
+        }        
+
+        #endregion
     }
 }

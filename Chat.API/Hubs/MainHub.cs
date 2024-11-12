@@ -1,19 +1,11 @@
-﻿using Azure;
-using Chat.API.Controllers;
-using Chat.API.Extensions;
-using Chat.API.Helpers;
-using Chat.API.Interfaces;
-using Chat.BLL.Interfaces;
-using Chat.BLL.Models;
-using Chat.BLL.Models.User;
-using LinqToDB.Data;
+﻿using Chat.API.Extensions;
+using Chat.API.Services.Interfaces;
+using Chat.BLL.Models.Message.Requests;
+using Chat.BLL.Models.PrivateChat.Requests;
+using Chat.BLL.Models.Shared;
+using Chat.BLL.Models.User.Requests;
+using Chat.BLL.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Connections.Abstractions;
-using Microsoft.AspNetCore.Connections.Features;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.AspNetCore.Mvc.ViewEngines;
-using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.SignalR;
 
 namespace Chat.API.Hubs
@@ -24,6 +16,7 @@ namespace Chat.API.Hubs
         #region Injects
 
         private readonly IUserService _userService;
+        private readonly IChatService _chatService;
         private readonly IMessageService _messageService;
         private readonly IRazorRenderer _razorRenderer;
 
@@ -31,41 +24,33 @@ namespace Chat.API.Hubs
 
         #region Ctors
 
-        public MainHub(IUserService userService, IMessageService messageService, IRazorRenderer razorRenderer)
+        public MainHub(IUserService userService, IMessageService messageService, IChatService chatService, IRazorRenderer razorRenderer)
         {
             _userService = userService;
+            _chatService = chatService;
             _messageService = messageService;
             _razorRenderer = razorRenderer;
         }
 
         #endregion
 
-        #region Lifecycle Methods
-
-        public override async Task OnConnectedAsync()
-        {
-            await base.OnConnectedAsync();
-        }
-
-        #endregion
-
         #region Endpoints
+
+        public async Task<string[]> SearchUsers(SearchUsersRequest request)
+        {
+            var response = await _userService.SearchUsers(request);
+
+            var result = await _razorRenderer.RenderPartialToStringArrayAsync("_SearchUserPartial", response.Users);
+            return result;
+        }
 
         public async Task<string[]> GetChats(GetChatsRequest request)
         {
-            var response = await _messageService.GetChats(request);
+            var response = await _chatService.GetChats(request);
 
             var result = await _razorRenderer.RenderPartialToStringArrayAsync("_ChatPreviewPartial", response.Chats);
             return result;
         }
-
-        //public async Task<string[]> GetPrivateChatMessages(GetPrivateChatRequest request)
-        //{
-        //    var response = await _messageService.GetPrivateChat(request);
-
-        //    var result = await _razorRenderer.RenderPartialToStringArrayAsync("_MessagePartial", response.Messages);
-        //    return result;
-        //}
 
         public async Task DeletePrivateChatLocally(DeleteChatRequest request)
         {
@@ -150,15 +135,7 @@ namespace Chat.API.Hubs
             var response = await _messageService.DeleteMessage(request);
 
             await Clients.Users(request.AuthorizedUserId, response.OtherUserId).SendAsync("MessageDeleted", response);
-        }
-
-        public async Task<string[]> SearchUsers(SearchUsersRequest request)
-        {
-            var response = await _userService.SearchUsers(request);
-
-            var result = await _razorRenderer.RenderPartialToStringArrayAsync("_SearchUserPartial", response.Users);
-            return result;
-        }
+        }        
 
         #endregion
     }

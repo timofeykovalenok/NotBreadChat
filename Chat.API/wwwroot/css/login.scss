@@ -1,4 +1,4 @@
-﻿@import "variables.scss";
+﻿@import "sass-variables.scss";
 
 .login-page {
 
@@ -12,8 +12,13 @@
             align-self: stretch;
             background: $PrimaryColor;
             padding: 2px 12px 2px 12px;
-            border: 0;  
+            border: 0;
             border-radius: 10px;
+        }
+
+        button {
+            border-radius: 10px;
+            padding: 2px 12px;
         }
     }
 

@@ -1,41 +1,67 @@
 ﻿window.addEventListener('DOMContentLoaded', () => {
+    //#region Fields
+
     const currentUserId = parseInt(document.getElementById('current-user-id').getAttribute('value'));
     const chatsListElement = document.getElementById('chats-list');
     const usersListElement = document.getElementById('users-list');
     const searchUsersField = document.getElementById('search-users-field') as HTMLInputElement;
     const searchUsersClearButton = document.getElementById('search-users-clear-button') as HTMLButtonElement;
 
-    window.addEventListener('popstate', () => {
+    //#endregion
+
+    window.addEventListener('popstate', onPopState);
+
+    searchUsersField.addEventListener('focus', onSearchUsersFieldFocus);
+    searchUsersField.addEventListener('blur', onSearchUsersFieldBlur);
+    searchUsersField.addEventListener('input', onSearchUsersFieldInput);
+    searchUsersClearButton.addEventListener('click', onSearchUsersClearButtonClick);
+    usersListElement.addEventListener('click', onUsersListClick);
+    usersListElement.addEventListener('mousedown', e => e.preventDefault());       
+    
+    hubConnection.on('newMessage', onNewMessageEvent);
+    hubConnection.on('messageViewed', onMessageViewed);
+
+    //#region DOM Events
+
+    function onPopState() {
         let previousChatAnchor = chatsListElement.querySelector('.chat-preview.active');
         previousChatAnchor?.classList.remove('active');
 
         let currentChatAnchor = chatsListElement.querySelector(`a.chat-preview[href$="${window.location.pathname}"]`);
         currentChatAnchor?.classList.add('active');
-    });
+    }
 
-    searchUsersField.addEventListener('input', async () => {
-        let searchValue = searchUsersField.value.trim();
-        if (searchValue == '') {
-            hideSearchUsers();
+    function onSearchUsersFieldFocus() {
+        searchUsers();
+    }
+
+    function onSearchUsersFieldBlur() {
+        clearSearchUsers();
+    }
+
+    function onSearchUsersFieldInput() {
+        if (searchUsersField.value.trim() == '') {
             return;
         }
 
-        chatsListElement.classList.add('d-none');
-        let usersHtml = await hubConnection.invoke('searchUsers', { searchValue: searchValue }) as String[];
-        usersListElement.innerHTML = usersHtml.join('');
-    });
-
-    searchUsersClearButton.addEventListener('click', () => {
-        searchUsersField.value = '';
-        hideSearchUsers();
-    });
-
-    function hideSearchUsers() {
-        usersListElement.innerHTML = '';
-        chatsListElement.classList.remove('d-none');
+        searchUsers();
     }
 
-    hubConnection.on('newMessage', (data) => {
+    function onSearchUsersClearButtonClick() {
+        searchUsersField.value = '';
+        clearSearchUsers();
+    }
+
+    function onUsersListClick() {
+        searchUsersField.blur();
+        clearSearchUsers();
+    }
+
+    //#endregion
+
+    //#region Hub Events
+
+    function onNewMessageEvent(data) {
         chatsListElement.insertAdjacentHTML('afterbegin', data.chatPreview.html);
 
         let newChatPreview = chatsListElement.firstElementChild;
@@ -56,17 +82,34 @@
 
         let unviewedMessagesCount = oldChatPreview.querySelector('.counter[data-count]').getAttribute('data-count');
         newChatPreview.querySelector('.counter[data-count]').setAttribute('data-count', (parseInt(unviewedMessagesCount) + 1).toString());
+    }
 
-    });
-
-    hubConnection.on('messageViewed', (model) => {
+    function onMessageViewed(model) {
         if (model.viewedByUserId == currentUserId) {
             let chatPreview = chatsListElement.querySelector(`.chat-preview[data-user-id="${model.messageAuthorId}"]`);
             let counter = chatPreview.querySelector('.counter[data-count]');
             counter.setAttribute('data-count', model.unviewedMessagesLeft.toString());
             return;
         }
-    });
+    }
+
+    //#endregion
+
+    //#region Private Methods
+
+    async function searchUsers() {
+        let searchValue = searchUsersField.value.trim();
+        chatsListElement.classList.add('d-none');
+        let usersHtml = await hubConnection.invoke('searchUsers', { searchValue: searchValue }) as String[];
+        usersListElement.innerHTML = usersHtml.join('');
+    }
+
+    function clearSearchUsers() {
+        usersListElement.innerHTML = '';
+        chatsListElement.classList.remove('d-none');
+    }
+
+    //#endregion
 
 });
 

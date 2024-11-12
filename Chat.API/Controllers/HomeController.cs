@@ -1,20 +1,19 @@
-using Chat.BLL.Interfaces;
-using Chat.BLL.Models;
+using Chat.API.Controllers.Base;
+using Chat.BLL.Models.PrivateChat.Requests;
+using Chat.BLL.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Chat.API.Controllers
 {
     [Authorize]
-    public class HomeController : Controller
+    public class HomeController : BaseController
     {
-        private readonly IUserService _userService;
-        private readonly IMessageService _messageService;
+        private readonly IChatService _chatService;
 
-        public HomeController(IUserService userService, IMessageService messageService)
+        public HomeController(IUserService userService, IChatService chatService)
         {
-            _userService = userService;
-            _messageService = messageService;
+            _chatService = chatService;
         }
 
         public IActionResult Index()
@@ -25,18 +24,9 @@ namespace Chat.API.Controllers
         [Route("/{OtherUserId:long}")]
         public async Task<IActionResult> PrivateChat([FromRoute] GetPrivateChatRequest request)
         {
-            var response = await _messageService.GetPrivateChat(request);
+            var response = await _chatService.GetPrivateChat(request);
 
             return SpaView(response);
-        }
-
-        private IActionResult SpaView(object? model = null)
-        {
-            Response.Headers.CacheControl = "no-store";
-
-            return Request.Headers["Sec-Fetch-Mode"] == "navigate"
-                ? View(model)
-                : PartialView(model);
-        }
+        }        
     }
 }

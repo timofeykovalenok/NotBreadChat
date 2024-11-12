@@ -257,13 +257,14 @@
     private confirmMessageEditing() {
         let oldMessageContent = this.editingMessageOldContent.textContent;
         let newMessageContent = this.writeMessageField.value.trim();
+        let messageId = this.editingMessageId;
 
         this.endMessageEditing();
 
         if (newMessageContent == '' || oldMessageContent == newMessageContent)
             return;
 
-        hubConnection.send('editMessage', { messageId: this.editingMessageId, content: newMessageContent });
+        hubConnection.send('editMessage', { messageId: messageId, content: newMessageContent });
     }
 
     private endMessageEditing() {

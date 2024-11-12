@@ -18,7 +18,7 @@ namespace Chat.DAL
             var mappingSchema = MappingSchema.Default
                 .SetConverter<DateTime, DateTime>(x => DateTime.SpecifyKind(x, DateTimeKind.Utc));
 
-            services.AddLinqToDBContext<PostgresDb>((provider, options) =>
+            services.AddLinqToDBContext<ChatContext>((provider, options) =>
                 options
                     .UsePostgreSQL(connectionString)
                     .UseMappingSchema(mappingSchema)

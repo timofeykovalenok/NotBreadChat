@@ -1,4 +1,4 @@
-﻿using Chat.API.Interfaces;
+﻿using Chat.API.Services.Interfaces;
 
 namespace Chat.API.Extensions
 {

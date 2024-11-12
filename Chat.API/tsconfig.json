@@ -1,0 +1,16 @@
+{
+  "compileOnSave":  true,
+  "compilerOptions": {
+    "noImplicitAny": false,
+    "noEmitOnError": false,
+    "removeComments": true,
+    "sourceMap": true,
+    "moduleResolution": "node",
+    "module": "es2022",
+    "target": "es2023",
+    "skipLibCheck": true
+  },
+  "exclude": [
+    "node_modules"
+  ]
+}

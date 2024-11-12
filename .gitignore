@@ -491,4 +491,3 @@ compose*.yaml
 *.dcproj
 Dockerfile*
 .dockerignore
-TemplateEngineHost/*

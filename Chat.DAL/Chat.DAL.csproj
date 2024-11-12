@@ -25,7 +25,6 @@
 
   <ItemGroup>
     <Folder Include="Context\" />
-    <Folder Include="Helpers\" />
   </ItemGroup>
 
   <ItemGroup>

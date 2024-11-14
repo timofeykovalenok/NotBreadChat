@@ -486,6 +486,7 @@ $RECYCLE.BIN/
 *.css*
 *.js*
 *.min*
+!**/lib/**
 docker-compose*.yml
 compose*.yaml
 *.dcproj

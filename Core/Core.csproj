@@ -14,9 +14,9 @@
     <WarningsAsErrors />
   </PropertyGroup>
 	
-	<!--<Target Name="CompileStaticAssets" AfterTargets="Build">
+	<Target Name="CompileStaticAssets" AfterTargets="Build">
 		<Exec Command="webcompiler -r ..\ -c .\webcompilerconfiguration.json" StandardOutputImportance="high" />
-	</Target>-->
+	</Target>
 
 	<ItemGroup>
 		<PackageReference Include="FluentMigrator" Version="5.2.0" />

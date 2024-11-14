@@ -12,7 +12,10 @@ namespace Core.Filters
             if (exception == null)
                 return;
 
-            context.Result = new StatusCodeResult((int)exception.StatusCode);
+            var result = new ObjectResult(exception.Message);
+            result.StatusCode = (int)exception.StatusCode;
+
+            context.Result = result;
             context.ExceptionHandled = true;
         }
     }

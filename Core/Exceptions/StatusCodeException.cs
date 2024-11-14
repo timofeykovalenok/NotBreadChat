@@ -7,7 +7,7 @@ namespace Core.Exceptions
         public readonly HttpStatusCode StatusCode;
 
         public StatusCodeException(HttpStatusCode statusCode, string? message = null)
-            : base(message)
+            : base(message ?? string.Empty)
         {
             StatusCode = statusCode;
         }

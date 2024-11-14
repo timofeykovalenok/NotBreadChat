@@ -6,8 +6,8 @@ namespace Chat.BLL.Services.Interfaces
 {
     public interface IUserService
     {
-        Task<RegisterResponse> Register(RegisterRequest request, CancellationToken ctn = default);
         Task<LoginResponse> Login(LoginRequest request, CancellationToken ctn = default);
+        Task<RegisterResponse> Register(RegisterRequest request, CancellationToken ctn = default);
 
         Task<GetUserResponse> GetUser(long id);
         Task<SearchUsersResponse> SearchUsers(SearchUsersRequest request);

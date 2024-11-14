@@ -1,4 +1,5 @@
-﻿using Chat.BLL.Models.Shared;
+﻿using Azure.Core;
+using Chat.BLL.Models.Shared;
 using Chat.BLL.Models.User.Requests;
 using Chat.BLL.Models.User.Responses;
 using Chat.BLL.Services.Interfaces;
@@ -30,21 +31,47 @@ namespace Chat.BLL.Services
 
         #endregion
 
-        #region Public Methods        
+        #region Public Methods 
+
+        public async Task<LoginResponse> Login(LoginRequest request, CancellationToken ctn = default)
+        {
+            if (!IsCredentialsValid(request.Login, request.Password))
+                throw new StatusCodeException(HttpStatusCode.BadRequest);
+
+            var user = await _context.GetTable<User>()
+                .FirstOrDefaultAsync(user => user.Login == request.Login, ctn)
+                ?? throw new StatusCodeException(HttpStatusCode.Unauthorized, "Неверный логин или пароль");
+
+            var salt = Convert.FromBase64String(user.PasswordSalt);
+            var passwordHash = GetPasswordHash(request.Password, salt);
+
+            var savedPasswordHash = Convert.FromBase64String(user.PasswordHash);
+            if (!passwordHash.SequenceEqual(savedPasswordHash))
+                throw new StatusCodeException(HttpStatusCode.Unauthorized, "Неверный логин или пароль");
+
+            return new LoginResponse
+            {
+                UserId = user.Id
+            };
+        }
 
         public async Task<RegisterResponse> Register(RegisterRequest request, CancellationToken ctn = default)
         {
+            if (!IsCredentialsValid(request.Login, request.Password) || string.IsNullOrWhiteSpace(request.UserName))
+                throw new StatusCodeException(HttpStatusCode.BadRequest);
+
             var salt = RandomNumberGenerator.GetBytes(16);
             var passwordHash = GetPasswordHash(request.Password, salt);
 
-            if (await _context.GetTable<User>().AnyAsync(x => x.Login == request.Login, ctn))
-                throw new StatusCodeException(HttpStatusCode.Conflict);
+            var trimmedLogin = request.Login.Trim();
+            if (await _context.GetTable<User>().AnyAsync(x => x.Login == trimmedLogin, ctn))
+                throw new StatusCodeException(HttpStatusCode.Conflict, "Пользователь с таким логином уже существует");
 
             var userId = await _context.GetTable<User>().InsertWithInt64IdentityAsync(() =>
                 new User
                 {
-                    Login = request.Login,
-                    Name = request.UserName,
+                    Login = trimmedLogin,
+                    Name = request.UserName.Trim(),
                     PasswordHash = Convert.ToBase64String(passwordHash),
                     PasswordSalt = Convert.ToBase64String(salt),
                 },
@@ -53,25 +80,6 @@ namespace Chat.BLL.Services
             return new RegisterResponse
             {
                 UserId = userId
-            };
-        }
-
-        public async Task<LoginResponse> Login(LoginRequest request, CancellationToken ctn = default)
-        {
-            var user = await _context.GetTable<User>()
-                .FirstOrDefaultAsync(user => user.Login == request.Login, ctn)
-                ?? throw new StatusCodeException(HttpStatusCode.Unauthorized);
-
-            var salt = Convert.FromBase64String(user.PasswordSalt);
-            var passwordHash = GetPasswordHash(request.Password, salt);
-
-            var savedPasswordHash = Convert.FromBase64String(user.PasswordHash);
-            if (!passwordHash.SequenceEqual(savedPasswordHash))
-                throw new StatusCodeException(HttpStatusCode.Unauthorized);
-
-            return new LoginResponse
-            {
-                UserId = user.Id
             };
         }
 
@@ -117,13 +125,20 @@ namespace Chat.BLL.Services
             throw new NotImplementedException();
         }
 
+        #endregion
+
+        #region Private Methods
+
+        private static bool IsCredentialsValid(string login, string password) =>
+            !string.IsNullOrWhiteSpace(login) && !string.IsNullOrWhiteSpace(password);
+
         private static byte[] GetPasswordHash(string password, byte[] salt)
         {
             var passwordBytes = Encoding.UTF8.GetBytes(password);
             var saltedPassword = passwordBytes.ConcatBytes(salt);
 
             return SHA256.HashData(saltedPassword);
-        }        
+        }
 
         #endregion
     }

@@ -56,6 +56,7 @@ namespace Chat.API.Controllers
         }
 
         [HttpPost("/login")]
+        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginRequest request, string? returnUrl)
         {
             var result = await _userService.Login(request);
@@ -70,7 +71,8 @@ namespace Chat.API.Controllers
         }
 
         [HttpPost("/registration")]
-        public async Task<IActionResult> Register(RegisterRequest request)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Registration(RegisterRequest request)
         {
             var result = await _userService.Register(request);
 

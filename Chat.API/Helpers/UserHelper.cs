@@ -11,6 +11,7 @@ namespace Chat.API.Helpers
             context.User != null
             ? GetUserId(context.User)
             : null;
+
         public static long? GetUserId(HttpContext context) =>
             GetUserId(context.User);
 

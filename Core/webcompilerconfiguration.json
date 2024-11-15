@@ -1,0 +1,39 @@
+{
+  "Minifiers": {
+    "GZip": false,
+    "Enabled": false
+  },
+  "Autoprefix": {
+    "Enabled": true,
+    "ProcessingOptions": {
+      "Browsers": [
+        "last 4 versions"
+      ],
+      "Cascade": true,
+      "Add": true,
+      "Remove": true,
+      "Supports": true,
+      "Flexbox": "All",
+      "Grid": "None",
+      "IgnoreUnknownVersions": false,
+      "Stats": "",
+      "SourceMap": true,
+      "InlineSourceMap": false,
+      "SourceMapIncludeContents": false,
+      "OmitSourceMapUrl": false
+    }
+  },
+  "CompilerSettings": {
+    "Sass": {
+      "IndentType": "Space",
+      "IndentWidth": 2,
+      "OutputStyle": "Expanded",
+      "RelativeUrls": true,
+      "LineFeed": "Lf",
+      "SourceMap": false
+    }
+  },
+  "Output": {
+    "Preserve": true
+  }
+}

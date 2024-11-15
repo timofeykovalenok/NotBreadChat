@@ -483,9 +483,11 @@ $RECYCLE.BIN/
 # Vim temporary swap files
 *.swp
 
-*.css*
-*.js*
-*.min*
+*.css
+*.js
+*.gz
+*.map
+*.min.*
 !**/lib/**
 docker-compose*.yml
 compose*.yaml
